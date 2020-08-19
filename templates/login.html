@@ -1,0 +1,29 @@
+{% extends 'base_account.html' %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 coll-sm-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">登录</h3>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="next" valud="{{ next }}" />
+                        {% include 'includes/form.html' %}
+                        <button type="submit" class="btn btn-outline-primary btn-block">登录</button>
+                    </form>
+                </div>
+                <center>
+                    <small class="text-muted ml-2">
+                        <a href="{% url 'password_reset' %}">忘记密码?</a>
+                    </small>
+                </center>
+                <div class="card-footer text-muted text-center">
+                    还没有账户? <a href="{% url 'signup' %}">注册</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

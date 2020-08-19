@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} 详情 {% endblock %}
+
+{% block content %}
+    <div class="container my-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'book_list' %}">所有图书</a></li>
+            <li class="breadcrumb-item">详细 - {{ books.title }}</li>
+        </ol>
+    </div>
+
+    <div class="container">
+
+
+
+        <div class="row">
+            <div class="col-12">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>书名:</strong> {{ books.title }}</li>
+                    <li class="list-group-item"><strong>作者:</strong> {{ books.author }}</li>
+                    <li class="list-group-item"><strong>分类:</strong> {{ books.genre }}</li>
+                    <li class="list-group-item"><strong>语言:</strong> {{ books.language }}</li>
+                    <li class="list-group-item"><strong>描述:</strong> <br/><br/>{{ books.description|linebreaksbr }}</li>
+                    <li class="list-group-item"><strong>出版社:</strong> {{ books.publication }}</li>
+                    <li class="list-group-item"><strong>价格:</strong> {{ books.price }} 元</li>
+                    <li class="list-group-item"><strong>卖家: </strong> <a href="{% url 'user_books' books.created_by.username %}">{{ books.created_by }}</a></li>
+                    <li class="list-group-item"><strong>联系方式: </strong> {{ books.contact_number }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if books.created_by == user %}
+    <div class="container mt-3 mb-3">
+        <div class="row top-buffer">
+            <div class="col-12">
+                <a href="{% url 'book_update' books.pk %}"><button class="btn btn-outline-success mx-2">编辑</button></a>
+                <a href="{% url 'book_delete' books.pk %}"><button class="btn btn-outline-danger">删除</button></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+<article class="container my-3">
+      <div class="card-body">
+        <!-- comments -->
+        <legend class="border-bottom mb-4">{{ comments.count }} 条评论 </legend>
+
+        {% for comment in comments %}
+        <div class="comments" style="padding: 10px;">
+          <p class="font-weight-bold" href="#">
+            {{ comment.author.username }}
+            <span class=" text-muted font-weight-normal">
+              {{ comment.created_on }}
+            </span>
+          </p>
+          {{ comment.body | linebreaks }}
+        </div>
+        {% endfor %}
+      </div>
+  </article>
+
+
+
+{% if user.is_authenticated %}
+    <div class="container my-3">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">评论</legend>
+                {{ comment_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">提交</button>
+            </div>
+        </form>
+    </div>
+{% else %}
+    <div class="container my-3">
+        <p>请先<a href="{% url 'login' %}">登录</a>后方可评论.</p>
+    </div>
+{% endif %}
+
+
+
+{% endblock %}
